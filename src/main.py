@@ -15,8 +15,8 @@ logging.basicConfig(
 
 # Função para enviar alertas via Telegram
 def send_telegram_alert(message: str):
-    bot_token = "7943661630:AAEbuCtzRuGMXebj2oZZFCPpzhEfbZB-Dmg"  # Substitua pelo token do seu bot
-    chat_id = "1139475165"        # Substitua pelo seu chat ID
+    bot_token = "SEU_BOT_TOKEN_AQUI"  # Substitua pelo token do seu bot
+    chat_id = "SEU_CHAT_ID_AQUI"        # Substitua pelo seu chat ID
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
     payload = {
         "chat_id": chat_id,
@@ -30,7 +30,6 @@ def send_telegram_alert(message: str):
 
 from strategies.moving_average_antecipation import getMovingAverageAntecipationTradeStrategy
 from strategies.moving_average import getMovingAverageTradeStrategy
-
 # from strategies.vortex_strategy import getVortexTradeStrategy
 from strategies.rsi_strategy import getRsiTradeStrategy
 from strategies.vortex_strategy import getVortexTradeStrategy
@@ -97,57 +96,57 @@ DELAY_ENTRE_ORDENS = 15 * 60     # Tempo que o bot espera depois de realizar uma
 # 🪙 MOEDAS NEGOCIADAS
 
 XRP_USDT = StockStartModel(
-    stockCode = "XRP",
-    operationCode = "XRPUSDT",
-    tradedQuantity = 3,
-    mainStrategy = MAIN_STRATEGY, mainStrategyArgs = MAIN_STRATEGY_ARGS,
-    fallbackStrategy = FALLBACK_STRATEGY, fallbackStrategyArgs = FALLBACK_STRATEGY_ARGS,
-    candlePeriod = CANDLE_PERIOD, stopLossPercentage = STOP_LOSS_PERCENTAGE,
-    tempoEntreTrades = TEMPO_ENTRE_TRADES, delayEntreOrdens = DELAY_ENTRE_ORDENS,
-    acceptableLossPercentage = ACCEPTABLE_LOSS_PERCENTAGE,
-    fallBackActivated= FALLBACK_ACTIVATED,
+    stockCode="XRP",
+    operationCode="XRPUSDT",
+    tradedQuantity=3,
+    mainStrategy=MAIN_STRATEGY, mainStrategyArgs=MAIN_STRATEGY_ARGS,
+    fallbackStrategy=FALLBACK_STRATEGY, fallbackStrategyArgs=FALLBACK_STRATEGY_ARGS,
+    candlePeriod=CANDLE_PERIOD, stopLossPercentage=STOP_LOSS_PERCENTAGE,
+    tempoEntreTrades=TEMPO_ENTRE_TRADES, delayEntreOrdens=DELAY_ENTRE_ORDENS,
+    acceptableLossPercentage=ACCEPTABLE_LOSS_PERCENTAGE,
+    fallBackActivated=FALLBACK_ACTIVATED,
     takeProfitAtPercentage=TP_AT_PERCENTAGE,
     takeProfitAmountPercentage=TP_AMOUNT_PERCENTAGE
 )
 
 SOL_USDT = StockStartModel(
-    stockCode = "SOL",
-    operationCode = "SOLUSDT",
-    tradedQuantity = 0.1,
-    mainStrategy = MAIN_STRATEGY, mainStrategyArgs = MAIN_STRATEGY_ARGS,
-    fallbackStrategy = FALLBACK_STRATEGY, fallbackStrategyArgs = FALLBACK_STRATEGY_ARGS,
-    candlePeriod = CANDLE_PERIOD, stopLossPercentage = STOP_LOSS_PERCENTAGE,
-    tempoEntreTrades = TEMPO_ENTRE_TRADES, delayEntreOrdens = DELAY_ENTRE_ORDENS,
-    acceptableLossPercentage = ACCEPTABLE_LOSS_PERCENTAGE,
-    fallBackActivated= FALLBACK_ACTIVATED,
+    stockCode="SOL",
+    operationCode="SOLUSDT",
+    tradedQuantity=0.1,
+    mainStrategy=MAIN_STRATEGY, mainStrategyArgs=MAIN_STRATEGY_ARGS,
+    fallbackStrategy=FALLBACK_STRATEGY, fallbackStrategyArgs=FALLBACK_STRATEGY_ARGS,
+    candlePeriod=CANDLE_PERIOD, stopLossPercentage=STOP_LOSS_PERCENTAGE,
+    tempoEntreTrades=TEMPO_ENTRE_TRADES, delayEntreOrdens=DELAY_ENTRE_ORDENS,
+    acceptableLossPercentage=ACCEPTABLE_LOSS_PERCENTAGE,
+    fallBackActivated=FALLBACK_ACTIVATED,
     takeProfitAtPercentage=TP_AT_PERCENTAGE,
     takeProfitAmountPercentage=TP_AMOUNT_PERCENTAGE
 )
 
 ADA_USDT = StockStartModel(
-    stockCode = "ADA",
-    operationCode = "ADAUSDT",
-    tradedQuantity = 10,
-    mainStrategy = MAIN_STRATEGY, mainStrategyArgs = MAIN_STRATEGY_ARGS,
-    fallbackStrategy = FALLBACK_STRATEGY, fallbackStrategyArgs = FALLBACK_STRATEGY_ARGS,
-    candlePeriod = CANDLE_PERIOD, stopLossPercentage = STOP_LOSS_PERCENTAGE,
-    tempoEntreTrades = TEMPO_ENTRE_TRADES, delayEntreOrdens = DELAY_ENTRE_ORDENS,
-    acceptableLossPercentage = ACCEPTABLE_LOSS_PERCENTAGE,
-    fallBackActivated= FALLBACK_ACTIVATED,
+    stockCode="ADA",
+    operationCode="ADAUSDT",
+    tradedQuantity=10,
+    mainStrategy=MAIN_STRATEGY, mainStrategyArgs=MAIN_STRATEGY_ARGS,
+    fallbackStrategy=FALLBACK_STRATEGY, fallbackStrategyArgs=FALLBACK_STRATEGY_ARGS,
+    candlePeriod=CANDLE_PERIOD, stopLossPercentage=STOP_LOSS_PERCENTAGE,
+    tempoEntreTrades=TEMPO_ENTRE_TRADES, delayEntreOrdens=DELAY_ENTRE_ORDENS,
+    acceptableLossPercentage=ACCEPTABLE_LOSS_PERCENTAGE,
+    fallBackActivated=FALLBACK_ACTIVATED,
     takeProfitAtPercentage=TP_AT_PERCENTAGE,
     takeProfitAmountPercentage=TP_AMOUNT_PERCENTAGE
 )
 
 BTC_USDT = StockStartModel(
-    stockCode = "BTC",
-    operationCode = "BTCUSDT",
-    tradedQuantity = 0.001,
-    mainStrategy = MAIN_STRATEGY, mainStrategyArgs = MAIN_STRATEGY_ARGS,
-    fallbackStrategy = FALLBACK_STRATEGY, fallbackStrategyArgs = FALLBACK_STRATEGY_ARGS,
-    candlePeriod = CANDLE_PERIOD, stopLossPercentage = STOP_LOSS_PERCENTAGE,
-    tempoEntreTrades = TEMPO_ENTRE_TRADES, delayEntreOrdens = DELAY_ENTRE_ORDENS,
-    acceptableLossPercentage = ACCEPTABLE_LOSS_PERCENTAGE,
-    fallBackActivated= FALLBACK_ACTIVATED,
+    stockCode="BTC",
+    operationCode="BTCUSDT",
+    tradedQuantity=0.001,
+    mainStrategy=MAIN_STRATEGY, mainStrategyArgs=MAIN_STRATEGY_ARGS,
+    fallbackStrategy=FALLBACK_STRATEGY, fallbackStrategyArgs=FALLBACK_STRATEGY_ARGS,
+    candlePeriod=CANDLE_PERIOD, stopLossPercentage=STOP_LOSS_PERCENTAGE,
+    tempoEntreTrades=TEMPO_ENTRE_TRADES, delayEntreOrdens=DELAY_ENTRE_ORDENS,
+    acceptableLossPercentage=ACCEPTABLE_LOSS_PERCENTAGE,
+    fallBackActivated=FALLBACK_ACTIVATED,
     takeProfitAtPercentage=TP_AT_PERCENTAGE,
     takeProfitAmountPercentage=TP_AMOUNT_PERCENTAGE
 )
@@ -166,53 +165,47 @@ thread_lock = threading.Lock()
 
 def trader_loop(stockStart: StockStartModel):
     MaTrader = BinanceTraderBot(
-        stock_code = stockStart.stockCode,
-        operation_code = stockStart.operationCode,
-        traded_quantity = stockStart.tradedQuantity,
-        traded_percentage = stockStart.tradedPercentage,
-        candle_period = stockStart.candlePeriod,
-        time_to_trade = stockStart.tempoEntreTrades,
-        delay_after_order = stockStart.delayEntreOrdens,
-        acceptable_loss_percentage = stockStart.acceptableLossPercentage,
-        stop_loss_percentage = stockStart.stopLossPercentage,
-        fallback_activated = stockStart.fallBackActivated,
-        take_profit_at_percentage = stockStart.takeProfitAtPercentage,
-        take_profit_amount_percentage = stockStart.takeProfitAmountPercentage,
-        main_strategy = stockStart.mainStrategy,
-        main_strategy_args = stockStart.mainStrategyArgs,
-        fallback_strategy = stockStart.fallbackStrategy,
-        fallback_strategy_args = stockStart.fallbackStrategyArgs
+        stock_code=stockStart.stockCode,
+        operation_code=stockStart.operationCode,
+        traded_quantity=stockStart.tradedQuantity,
+        traded_percentage=stockStart.tradedPercentage,
+        candle_period=stockStart.candlePeriod,
+        time_to_trade=stockStart.tempoEntreTrades,
+        delay_after_order=stockStart.delayEntreOrdens,
+        acceptable_loss_percentage=stockStart.acceptableLossPercentage,
+        stop_loss_percentage=stockStart.stopLossPercentage,
+        fallback_activated=stockStart.fallBackActivated,
+        take_profit_at_percentage=stockStart.takeProfitAtPercentage,
+        take_profit_amount_percentage=stockStart.takeProfitAmountPercentage,
+        main_strategy=stockStart.mainStrategy,
+        main_strategy_args=stockStart.mainStrategyArgs,
+        fallback_strategy=stockStart.fallbackStrategy,
+        fallback_strategy_args=stockStart.fallbackStrategyArgs
     )
 
     total_executed: int = 1
 
     while True:
         try:
-            if THREAD_LOCK:
-                with thread_lock:
-                    print(f"[{MaTrader.operation_code}][{total_executed}] '{MaTrader.operation_code}'")
-                    MaTrader.execute()
-                    alert_message = (
-                        f"<b>{MaTrader.operation_code}</b>\n"
-                        f"Execução: {total_executed}\n"
-                        f"Próximo trade em: {MaTrader.time_to_sleep/60:.2f} min"
-                    )
-                    send_telegram_alert(alert_message)
-                    print(f"^ [{MaTrader.operation_code}][{total_executed}] time_to_sleep = '{MaTrader.time_to_sleep/60:.2f} min'")
-                    print("------------------------------------------------")
-                    total_executed += 1
-            else:
-                print(f"[{MaTrader.operation_code}][{total_executed}] '{MaTrader.operation_code}'")
-                MaTrader.execute()
-                alert_message = (
-                    f"<b>{MaTrader.operation_code}</b>\n"
-                    f"Execução: {total_executed}\n"
-                    f"Próximo trade em: {MaTrader.time_to_sleep/60:.2f} min"
-                )
-                send_telegram_alert(alert_message)
-                print(f"^ [{MaTrader.operation_code}][{total_executed}] time_to_sleep = '{MaTrader.time_to_sleep/60:.2f} min'")
-                print("------------------------------------------------")
-                total_executed += 1
+            # Preparação das mensagens a serem exibidas e enviadas
+            msg_lines = []
+            msg_lines.append(f"[{MaTrader.operation_code}][{total_executed}] '{MaTrader.operation_code}'")
+            print(msg_lines[-1])
+            
+            # Execução da estratégia
+            MaTrader.execute()
+            
+            msg_lines.append(f"^ [{MaTrader.operation_code}][{total_executed}] time_to_sleep = '{MaTrader.time_to_sleep/60:.2f} min'")
+            print(msg_lines[-1])
+            
+            msg_lines.append("------------------------------------------------")
+            print(msg_lines[-1])
+            
+            # Envia a mesma informação para o Telegram
+            full_message = "\n".join(msg_lines)
+            send_telegram_alert(full_message)
+            
+            total_executed += 1
         except Exception as e:
             error_message = f"Erro no trader {MaTrader.operation_code} na execução {total_executed}: {e}"
             send_telegram_alert(error_message)
