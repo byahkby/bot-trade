@@ -1,6 +1,7 @@
 import threading
 import time
 import requests
+import datetime
 from modules.BinanceTraderBot import BinanceTraderBot
 from binance.client import Client
 from Models.StockStartModel import StockStartModel
@@ -15,18 +16,75 @@ logging.basicConfig(
 
 # Função para enviar alertas via Telegram
 def send_telegram_alert(message: str):
-    bot_token = "7943661630:AAEbuCtzRuGMXebj2oZZFCPpzhEfbZB-Dmg"  # Substitua pelo token do seu bot
-    chat_id = "1139475165"        # Substitua pelo seu chat ID
+    bot_token = "7943661630:AAEbuCtzRuGMXebj2oZZFCPpzhEfbZB-Dmg"  # Seu token
+    chat_id = "1139475165"  # Seu chat ID
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
     payload = {
         "chat_id": chat_id,
         "text": message,
-        "parse_mode": "HTML"  # Permite formatação em HTML (opcional)
+        "parse_mode": "HTML"  # Permite formatação em HTML
     }
     response = requests.post(url, data=payload)
     if response.status_code != 200:
         print("Erro ao enviar alerta para o Telegram:", response.text)
     return response.json()
+
+# Função para formatar a mensagem com detalhes do trade
+def format_telegram_message(MaTrader: BinanceTraderBot, total_executed: int) -> str:
+    now = datetime.datetime.now().strftime("(%H:%M:%S) %d-%m-%Y")
+    # Utilize atributos do MaTrader, se existentes, ou valores padrão de exemplo
+    last_buy_date = getattr(MaTrader, 'last_buy_date', "(15:37:58) 14-03-2025")
+    last_buy_price = getattr(MaTrader, 'last_buy_price', "0.7480")
+    last_buy_qty = getattr(MaTrader, 'last_buy_qty', "10.0")
+    position = getattr(MaTrader, 'position', "Comprado")
+    balance = getattr(MaTrader, 'balance', "10.0000 (ADA)")
+    current_price = getattr(MaTrader, 'current_price', "0.7408")
+    min_sell_price = getattr(MaTrader, 'min_sell_price', "0.7481")
+    stop_loss_info = getattr(MaTrader, 'stop_loss_info', "0.7219 (-3.50%)")
+    variation = getattr(MaTrader, 'variation', "-0.98%")
+    take_profit = getattr(MaTrader, 'take_profit', "2% (Venda de: 50%)")
+    strategy_name = getattr(MaTrader, 'strategy_name', "Vortex")
+    vi_plus = getattr(MaTrader, 'vi_plus', "1.25")
+    vi_minus = getattr(MaTrader, 'vi_minus', "0.79")
+    decision = getattr(MaTrader, 'decision', "Comprar")
+    final_decision = getattr(MaTrader, 'final_decision', "Comprar")
+    final_action = getattr(MaTrader, 'final_action', "Manter posição (Comprado)")
+
+    message = f"""<b>🟢 Executado {now}</b>
+
+<b>Última ordem de COMPRA executada para {MaTrader.operation_code}:</b>
+ - <b>Data:</b> {last_buy_date} | <b>Preço:</b> {last_buy_price} | <b>Qnt.:</b> {last_buy_qty}
+<b>Ordens de VENDA:</b> Não há ordens de VENDA executadas para {MaTrader.operation_code}.
+
+-------
+<b>Detalhes:</b>
+ - <b>Posição atual:</b> {position}
+ - <b>Balanço atual:</b> {balance}
+
+ - <b>Preço atual:</b> {current_price}
+ - <b>Preço mínimo para vender:</b> {min_sell_price}
+ - <b>Stop Loss em:</b> {stop_loss_info}
+
+ - <b>Variação atual:</b> {variation}
+ - <b>Próxima meta Take Profit:</b> {take_profit}
+
+-------
+<b>📊 Estratégia:</b> {strategy_name}
+ | <b>VI+:</b> {vi_plus}
+ | <b>VI-:</b> {vi_minus}
+ | <b>Decisão:</b> {decision}
+-------
+ - Não há ordens de compra abertas para {MaTrader.operation_code}.
+
+--------------
+<b>🔎 Decisão Final:</b> {final_decision}
+<b>🏁 Ação final:</b> {final_action}
+--------------
+------------------------------------------------
+^ [{MaTrader.operation_code}][{total_executed}] time_to_sleep = '{MaTrader.time_to_sleep/60:.2f} min'
+------------------------------------------------
+"""
+    return message
 
 from strategies.moving_average_antecipation import getMovingAverageAntecipationTradeStrategy
 from strategies.moving_average import getMovingAverageTradeStrategy
@@ -45,21 +103,13 @@ from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
 # 🏆 ESTRATÉGIA PRINCIPAL 🏆
 
 # MAIN_STRATEGY = getMovingAverageAntecipationTradeStrategy
-# MAIN_STRATEGY_ARGS = {"volatility_factor": 0.5, # Interfere na antecipação e nos lances de compra e venda limitados 
-#                       "fast_window": 9,
-#                       "slow_window": 21}
+# MAIN_STRATEGY_ARGS = {"volatility_factor": 0.5, "fast_window": 9, "slow_window": 21}
 
 MAIN_STRATEGY = getVortexTradeStrategy
 MAIN_STRATEGY_ARGS = {}
 
 # MAIN_STRATEGY = getMovingAverageRSIVolumeStrategy
-# MAIN_STRATEGY_ARGS = {  "fast_window":  9,
-#                         "slow_window":  21,
-#                         "rsi_window":  14,
-#                         "rsi_overbought":  70,
-#                         "rsi_oversold":  30,
-#                         "volume_multiplier":  1.5
-#                         }
+# MAIN_STRATEGY_ARGS = {"fast_window": 9, "slow_window": 21, "rsi_window": 14, "rsi_overbought": 70, "rsi_oversold": 30, "volume_multiplier": 1.5}
 
 # MAIN_STRATEGY = getRsiTradeStrategy
 # MAIN_STRATEGY_ARGS = {}
@@ -68,29 +118,27 @@ MAIN_STRATEGY_ARGS = {}
 
 # 🥈 ESTRATÉGIA DE FALLBACK (reserva) 🥈
 
-FALLBACK_ACTIVATED  = True      
+FALLBACK_ACTIVATED = True      
 FALLBACK_STRATEGY = getMovingAverageTradeStrategy
 FALLBACK_STRATEGY_ARGS = {}
 
 # ------------------------------------------------------------------
 # 🛠️ AJUSTES TÉCNICOS 🛠️
 
-# Ajustes de LOSS PROTECTION
-ACCEPTABLE_LOSS_PERCENTAGE  = 0         # (Em base 100%) Quando o bot aceita perder (se for negativo, o bot só aceita lucro)
-STOP_LOSS_PERCENTAGE        = 3.5       # (Em base 100%) % Máxima de loss que o bot aceita para vender à mercado
+ACCEPTABLE_LOSS_PERCENTAGE = 0         # (% máximo de perda aceitável)
+STOP_LOSS_PERCENTAGE = 3.5             # (% de perda para acionar venda a mercado)
 
-# Ajustes de TAKE PROFIT (Em base 100%)                        
-TP_AT_PERCENTAGE =      [2, 4, 8]       # Em [X%, Y%]                       
-TP_AMOUNT_PERCENTAGE =  [50, 50, 100]   # Vende [A%, B%]
+TP_AT_PERCENTAGE = [2, 4, 8]           # Meta de Take Profit (%)
+TP_AMOUNT_PERCENTAGE = [50, 50, 100]   # Percentual da posição a vender
 
 # ------------------------------------------------------------------
 # ⌛ AJUSTES DE TEMPO
 
-# CANDLE_PERIOD = Client.KLINE_INTERVAL_1HOUR # Período do candle analisado
-CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE  # Período do candle analisado
+# CANDLE_PERIOD = Client.KLINE_INTERVAL_1HOUR
+CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
 
-TEMPO_ENTRE_TRADES = 3 * 60      # Tempo que o bot espera para verificar o mercado (em segundos)
-DELAY_ENTRE_ORDENS = 15 * 60     # Tempo que o bot espera depois de realizar uma ordem (ajuda a diminuir trades de borda)
+TEMPO_ENTRE_TRADES = 3 * 60      # em segundos
+DELAY_ENTRE_ORDENS = 15 * 60     # em segundos
 
 # ------------------------------------------------------------------
 # 🪙 MOEDAS NEGOCIADAS
@@ -151,15 +199,13 @@ BTC_USDT = StockStartModel(
     takeProfitAmountPercentage=TP_AMOUNT_PERCENTAGE
 )
 
-# ⤵️ Array que DEVE CONTER as moedas que serão negociadas
+# Array de moedas negociadas
 stocks_traded_list = [XRP_USDT, SOL_USDT, ADA_USDT, BTC_USDT]
 
-THREAD_LOCK = True  # True = Executa 1 moeda por vez | False = Executa todas simultaneamente
+THREAD_LOCK = True  # True = execução sequencial; False = execução simultânea
 
 # 🔴🔴🔴 CONFIGURAÇÕES - FIM 🔴🔴🔴
 # -------------------------------------------------------------------------------------------------
-
-# 🔁 LOOP PRINCIPAL
 
 thread_lock = threading.Lock()
 
@@ -187,48 +233,37 @@ def trader_loop(stockStart: StockStartModel):
 
     while True:
         try:
-            # Preparação das mensagens a serem exibidas e enviadas
-            msg_lines = []
-            msg_lines.append(f"[{MaTrader.operation_code}][{total_executed}] '{MaTrader.operation_code}'")
-            print(msg_lines[-1])
-            
-            # Execução da estratégia
+            # Exibe mensagem no console (opcional)
+            print(f"[{MaTrader.operation_code}][{total_executed}] '{MaTrader.operation_code}'")
             MaTrader.execute()
+            print(f"^ [{MaTrader.operation_code}][{total_executed}] time_to_sleep = '{MaTrader.time_to_sleep/60:.2f} min'")
+            print("------------------------------------------------")
             
-            msg_lines.append(f"^ [{MaTrader.operation_code}][{total_executed}] time_to_sleep = '{MaTrader.time_to_sleep/60:.2f} min'")
-            print(msg_lines[-1])
-            
-            msg_lines.append("------------------------------------------------")
-            print(msg_lines[-1])
-            
-            # Envia a mesma informação para o Telegram
-            full_message = "\n".join(msg_lines)
-            send_telegram_alert(full_message)
+            # Formata e envia a mensagem para o Telegram
+            message = format_telegram_message(MaTrader, total_executed)
+            send_telegram_alert(message)
             
             total_executed += 1
         except Exception as e:
-            error_message = f"Erro no trader {MaTrader.operation_code} na execução {total_executed}: {e}"
+            error_message = f"<b>Erro no trader {MaTrader.operation_code} na execução {total_executed}:</b> {e}"
             send_telegram_alert(error_message)
             print(error_message)
         time.sleep(MaTrader.time_to_sleep)
 
-# Criando e iniciando uma thread para cada objeto
+# Inicia uma thread para cada ativo
 threads = []
 
 for asset in stocks_traded_list:
     thread = threading.Thread(target=trader_loop, args=(asset,))
-    thread.daemon = True  # Permite finalizar as threads ao encerrar o programa
+    thread.daemon = True  # Permite encerrar as threads junto com o programa
     thread.start()
     threads.append(thread)
 
 print("Threads iniciadas para todos os ativos.")
 
-# O programa principal continua executando sem bloquear
+# Mantém o programa em execução
 try:
     while True:
-        time.sleep(1)  # Mantenha o programa rodando
+        time.sleep(1)
 except KeyboardInterrupt:
     print("\nPrograma encerrado pelo usuário.")
-
-# -----------------------------------------------------------------
-# fmt: on
