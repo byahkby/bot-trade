@@ -80,8 +80,8 @@ TP_AMOUNT_PERCENTAGE =  [50, 50, 100]   # Vende [A%, B%]
 # CANDLE_PERIOD = Client.KLINE_INTERVAL_1HOUR # Périodo do candle análisado
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE # Périodo do candle análisado
 
-TEMPO_ENTRE_TRADES          = 30 * 60            # Tempo que o bot espera para verificar o mercado (em segundos)
-DELAY_ENTRE_ORDENS          = 60 * 60           # Tempo que o bot espera depois de realizar uma ordem de compra ou venda (ajuda a diminuir trades de borda)
+TEMPO_ENTRE_TRADES          = 3 * 60            # Tempo que o bot espera para verificar o mercado (em segundos)
+DELAY_ENTRE_ORDENS          = 15 * 60           # Tempo que o bot espera depois de realizar uma ordem de compra ou venda (ajuda a diminuir trades de borda)
 
 
 # ------------------------------------------------------------------
