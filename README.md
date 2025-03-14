@@ -56,3 +56,9 @@ Siga para conhecer mais o trabalho:
     Além da licença de distribuição, o robô/código é disponibilizado para uso sob sua total responsabilidade, sem que os desenvolvedores assumam qualquer responsabilidade por perdas financeiras ou outros danos decorrentes de seu uso.
 
     Negocie com responsabilidade
+
+
+
+
+
+git remote add origin https://github.com/byahkby/bot-trade.git
