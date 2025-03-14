@@ -15,8 +15,8 @@ logging.basicConfig(
 
 # Função para enviar alertas via Telegram
 def send_telegram_alert(message: str):
-    bot_token = "SEU_BOT_TOKEN_AQUI"  # Substitua pelo token do seu bot
-    chat_id = "SEU_CHAT_ID_AQUI"        # Substitua pelo seu chat ID
+    bot_token = "7943661630:AAEbuCtzRuGMXebj2oZZFCPpzhEfbZB-Dmg"  # Substitua pelo token do seu bot
+    chat_id = "1139475165"        # Substitua pelo seu chat ID
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
     payload = {
         "chat_id": chat_id,
