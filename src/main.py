@@ -99,7 +99,7 @@ TP_AMOUNT_PERCENTAGE =  [50, 50, 100]
 
 # Ajustes de tempo
 CANDLE_PERIOD = Client.KLINE_INTERVAL_5MINUTE
-TEMPO_ENTRE_TRADES          =  60
+TEMPO_ENTRE_TRADES          = 2 * 60
 DELAY_ENTRE_ORDENS          = 5 * 60
 
 # Moedas negociadas
