@@ -137,7 +137,7 @@ TP_AMOUNT_PERCENTAGE = [50, 50, 100]   # Percentual da posição a vender
 # CANDLE_PERIOD = Client.KLINE_INTERVAL_1HOUR
 CANDLE_PERIOD = Client.KLINE_INTERVAL_5MINUTE
 
-TEMPO_ENTRE_TRADES = 3 * 60      # em segundos
+TEMPO_ENTRE_TRADES = 60      # em segundos
 DELAY_ENTRE_ORDENS = 5 * 60     # em segundos
 
 # ------------------------------------------------------------------
