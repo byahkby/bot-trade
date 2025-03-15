@@ -6,7 +6,12 @@ from modules.BinanceTraderBot import BinanceTraderBot
 from binance.client import Client
 from Models.StockStartModel import StockStartModel
 import logging
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+BINANCE_API_KEY = os.getenv("BINANCE_API_KEY")
+BINANCE_SECRET_KEY = os.getenv("BINANCE_SECRET_KEY")
 
 # Define o logger
 logging.basicConfig(
@@ -29,6 +34,42 @@ def send_telegram_alert(message: str):
     if response.status_code != 200:
         print("Erro ao enviar alerta para o Telegram:", response.text)
     return response.json()
+
+# Função auxiliar para monitorar o saldo de BNB e comprar se estiver abaixo do mínimo
+def maintain_bnb_balance(minimum_bnb=0.01, check_interval=300):
+    """
+    Verifica a cada 'check_interval' segundos se o saldo de BNB está abaixo de 'minimum_bnb'.
+    Se estiver, utiliza 5% do saldo em USDT para comprar BNB a mercado.
+    """
+    client = Client(BINANCE_API_KEY, BINANCE_SECRET_KEY)
+    while True:
+        try:
+            account = client.get_account()
+            bnb_balance = 0.0
+            usdt_balance = 0.0
+            for asset in account['balances']:
+                if asset['asset'] == 'BNB':
+                    bnb_balance = float(asset['free'])
+                elif asset['asset'] == 'USDT':
+                    usdt_balance = float(asset['free'])
+            # Se o saldo de BNB for insuficiente e houver USDT disponível
+            if bnb_balance < minimum_bnb and usdt_balance > 10:
+                # Define que 5% do saldo em USDT será usado para comprar BNB
+                amount_to_spend = usdt_balance * 0.05
+                ticker = client.get_symbol_ticker(symbol='BNBUSDT')
+                bnb_price = float(ticker['price'])
+                quantity = amount_to_spend / bnb_price
+                try:
+                    order = client.order_market_buy(symbol='BNBUSDT', quantity=quantity)
+                    print("Comprado BNB:", order)
+                    send_telegram_alert(f"✅ Comprado BNB automaticamente para manter saldo mínimo.\nOrdem: {order}")
+                except Exception as e:
+                    print("Erro ao comprar BNB:", e)
+                    send_telegram_alert(f"❌ Erro ao comprar BNB: {e}")
+            time.sleep(check_interval)
+        except Exception as e:
+            print("Erro no monitor de saldo de BNB:", e)
+            time.sleep(check_interval)
 
 # Função para formatar a mensagem com detalhes do trade
 def format_telegram_message(MaTrader: BinanceTraderBot, total_executed: int) -> str:
@@ -206,7 +247,12 @@ stocks_traded_list = [XRP_USDT, SOL_USDT, ADA_USDT, BTC_USDT]
 THREAD_LOCK = True  # True = execução sequencial; False = execução simultânea
 
 # 🔴🔴🔴 CONFIGURAÇÕES - FIM 🔴🔴🔴
+
 # -------------------------------------------------------------------------------------------------
+# Inicia uma thread para monitorar o saldo de BNB
+bnb_thread = threading.Thread(target=maintain_bnb_balance, args=(0.01, 300))
+bnb_thread.daemon = True
+bnb_thread.start()
 
 thread_lock = threading.Lock()
 
