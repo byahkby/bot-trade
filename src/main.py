@@ -88,7 +88,7 @@ def format_telegram_message(MaTrader: BinanceTraderBot, total_executed: int) -> 
 
 from strategies.moving_average_antecipation import getMovingAverageAntecipationTradeStrategy
 from strategies.moving_average import getMovingAverageTradeStrategy
-from strategies.vortex_strategy import getVortexTradeStrategy
+#from strategies.vortex_strategy import getVortexTradeStrategy
 from strategies.rsi_strategy import getRsiTradeStrategy
 from strategies.vortex_strategy import getVortexTradeStrategy
 from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
