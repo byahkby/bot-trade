@@ -1,6 +1,7 @@
 import threading
 import time
 import requests
+import datetime
 import os
 from dotenv import load_dotenv
 from modules.BinanceTraderBot import BinanceTraderBot
@@ -8,10 +9,10 @@ from binance.client import Client
 from Models.StockStartModel import StockStartModel
 import logging
 
+
+
 # Carrega variáveis do .env
 load_dotenv()
-BINANCE_API_KEY = os.getenv("BINANCE_API_KEY")
-BINANCE_SECRET_KEY = os.getenv("BINANCE_SECRET_KEY")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
@@ -22,7 +23,7 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
-# Função para enviar alertas via Telegram usando as credenciais do .env
+# Função para enviar alertas via Telegram
 def send_telegram_alert(message: str):
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {
@@ -35,41 +36,62 @@ def send_telegram_alert(message: str):
         print("Erro ao enviar alerta para o Telegram:", response.text)
     return response.json()
 
-# Função auxiliar para monitorar o saldo de BNB e comprar se estiver abaixo do mínimo
-def maintain_bnb_balance(minimum_bnb=0.01, check_interval=300):
-    """
-    Verifica a cada 'check_interval' segundos se o saldo de BNB está abaixo de 'minimum_bnb'.
-    Se estiver, utiliza 5% do saldo em USDT para comprar BNB a mercado.
-    """
-    client = Client(BINANCE_API_KEY, BINANCE_SECRET_KEY)
-    while True:
-        try:
-            account = client.get_account()
-            bnb_balance = 0.0
-            usdt_balance = 0.0
-            for asset in account['balances']:
-                if asset['asset'] == 'BNB':
-                    bnb_balance = float(asset['free'])
-                elif asset['asset'] == 'USDT':
-                    usdt_balance = float(asset['free'])
-            # Se o saldo de BNB for insuficiente e houver USDT disponível
-            if bnb_balance < minimum_bnb and usdt_balance > 10:
-                # Define que 5% do saldo em USDT será usado para comprar BNB
-                amount_to_spend = usdt_balance * 0.05
-                ticker = client.get_symbol_ticker(symbol='BNBUSDT')
-                bnb_price = float(ticker['price'])
-                quantity = amount_to_spend / bnb_price
-                try:
-                    order = client.order_market_buy(symbol='BNBUSDT', quantity=quantity)
-                    print("Comprado BNB:", order)
-                    send_telegram_alert(f"✅ Comprado BNB automaticamente para manter saldo mínimo.\nOrdem: {order}")
-                except Exception as e:
-                    print("Erro ao comprar BNB:", e)
-                    send_telegram_alert(f"❌ Erro ao comprar BNB: {e}")
-            time.sleep(check_interval)
-        except Exception as e:
-            print("Erro no monitor de saldo de BNB:", e)
-            time.sleep(check_interval)
+# Função para formatar a mensagem com detalhes do trade
+def format_telegram_message(MaTrader: BinanceTraderBot, total_executed: int) -> str:
+    now = datetime.datetime.now().strftime("(%H:%M:%S) %d-%m-%Y")
+    # Utilize atributos do MaTrader, se existentes, ou valores padrão de exemplo
+    last_buy_date = getattr(MaTrader, 'last_buy_date', "(15:37:58) 14-03-2025")
+    last_buy_price = getattr(MaTrader, 'last_buy_price', "0.7480")
+    last_buy_qty = getattr(MaTrader, 'last_buy_qty', "10.0")
+    position = getattr(MaTrader, 'position', "Comprado")
+    balance = getattr(MaTrader, 'balance', "10.0000 (ADA)")
+    current_price = getattr(MaTrader, 'current_price', "0.7408")
+    min_sell_price = getattr(MaTrader, 'min_sell_price', "0.7481")
+    stop_loss_info = getattr(MaTrader, 'stop_loss_info', "0.7219 (-3.50%)")
+    variation = getattr(MaTrader, 'variation', "-0.98%")
+    take_profit = getattr(MaTrader, 'take_profit', "2% (Venda de: 50%)")
+    strategy_name = getattr(MaTrader, 'strategy_name', "Vortex")
+    vi_plus = getattr(MaTrader, 'vi_plus', "1.25")
+    vi_minus = getattr(MaTrader, 'vi_minus', "0.79")
+    decision = getattr(MaTrader, 'decision', "Comprar")
+    final_decision = getattr(MaTrader, 'final_decision', "Comprar")
+    final_action = getattr(MaTrader, 'final_action', "Manter posição (Comprado)")
+
+    message = f"""<b>🟢 Executado {now}</b>
+
+<b>Última ordem de COMPRA executada para {MaTrader.operation_code}:</b>
+ - <b>Data:</b> {last_buy_date} | <b>Preço:</b> {last_buy_price} | <b>Qnt.:</b> {last_buy_qty}
+<b>Ordens de VENDA:</b> Não há ordens de VENDA executadas para {MaTrader.operation_code}.
+
+-------
+<b>Detalhes:</b>
+ - <b>Posição atual:</b> {position}
+ - <b>Balanço atual:</b> {balance}
+
+ - <b>Preço atual:</b> {current_price}
+ - <b>Preço mínimo para vender:</b> {min_sell_price}
+ - <b>Stop Loss em:</b> {stop_loss_info}
+
+ - <b>Variação atual:</b> {variation}
+ - <b>Próxima meta Take Profit:</b> {take_profit}
+
+-------
+<b>📊 Estratégia:</b> {strategy_name}
+ | <b>VI+:</b> {vi_plus}
+ | <b>VI-:</b> {vi_minus}
+ | <b>Decisão:</b> {decision}
+-------
+ - Não há ordens de compra abertas para {MaTrader.operation_code}.
+
+--------------
+<b>🔎 Decisão Final:</b> {final_decision}
+<b>🏁 Ação final:</b> {final_action}
+--------------
+------------------------------------------------
+^ [{MaTrader.operation_code}][{total_executed}] time_to_sleep = '{MaTrader.time_to_sleep/60:.2f} min'
+------------------------------------------------
+"""
+    return message
 
 from strategies.moving_average_antecipation import getMovingAverageAntecipationTradeStrategy
 from strategies.moving_average import getMovingAverageTradeStrategy
@@ -82,27 +104,52 @@ from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
 # -------------------------------------------------------------------------------------------------
 # 🟢🟢🟢 CONFIGURAÇÕES - PODEM ALTERAR - INÍCIO 🟢🟢🟢
 
-# Estratégia principal (exemplo com Vortex)
+# ------------------------------------------------------------------
+# 🚀 AJUSTES DE ESTRATÉGIA 🚀
+
+# 🏆 ESTRATÉGIA PRINCIPAL 🏆
+
+# MAIN_STRATEGY = getMovingAverageAntecipationTradeStrategy
+# MAIN_STRATEGY_ARGS = {"volatility_factor": 0.5, "fast_window": 9, "slow_window": 21}
+
 MAIN_STRATEGY = getVortexTradeStrategy
 MAIN_STRATEGY_ARGS = {}
 
-# Estratégia de fallback (reserva)
-FALLBACK_ACTIVATED  = True      
+# MAIN_STRATEGY = getMovingAverageRSIVolumeStrategy
+# MAIN_STRATEGY_ARGS = {"fast_window": 9, "slow_window": 21, "rsi_window": 14, "rsi_overbought": 70, "rsi_oversold": 30, "volume_multiplier": 1.5}
+
+# MAIN_STRATEGY = getRsiTradeStrategy
+# MAIN_STRATEGY_ARGS = {}
+
+# -----------------
+
+# 🥈 ESTRATÉGIA DE FALLBACK (reserva) 🥈
+
+FALLBACK_ACTIVATED = True      
 FALLBACK_STRATEGY = getMovingAverageTradeStrategy
 FALLBACK_STRATEGY_ARGS = {}
 
-# Ajustes técnicos
-ACCEPTABLE_LOSS_PERCENTAGE  = 0
-STOP_LOSS_PERCENTAGE        = 2.0
-TP_AT_PERCENTAGE =      [2, 4, 8]
-TP_AMOUNT_PERCENTAGE =  [50, 50, 100]
+# ------------------------------------------------------------------
+# 🛠️ AJUSTES TÉCNICOS 🛠️
 
-# Ajustes de tempo
+ACCEPTABLE_LOSS_PERCENTAGE = 0         # (% máximo de perda aceitável)
+STOP_LOSS_PERCENTAGE = 2.0             # (% de perda para acionar venda a mercado)
+
+TP_AT_PERCENTAGE = [1, 2, 4]           # Meta de Take Profit (%)
+TP_AMOUNT_PERCENTAGE = [50, 50, 100]   # Percentual da posição a vender
+
+# ------------------------------------------------------------------
+# ⌛ AJUSTES DE TEMPO
+
+# CANDLE_PERIOD = Client.KLINE_INTERVAL_1HOUR
 CANDLE_PERIOD = Client.KLINE_INTERVAL_5MINUTE
-TEMPO_ENTRE_TRADES          = 2 * 60
-DELAY_ENTRE_ORDENS          = 5 * 60
 
-# Moedas negociadas
+TEMPO_ENTRE_TRADES = 5 * 60     # em segundos
+DELAY_ENTRE_ORDENS = 5 * 60     # em segundos
+
+# ------------------------------------------------------------------
+# 🪙 MOEDAS NEGOCIADAS
+
 XRP_USDT = StockStartModel(
     stockCode="XRP",
     operationCode="XRPUSDT",
@@ -159,20 +206,13 @@ BTC_USDT = StockStartModel(
     takeProfitAmountPercentage=TP_AMOUNT_PERCENTAGE
 )
 
-# Array com as moedas negociadas
-stocks_traded_list = [ADA_USDT, SOL_USDT, XRP_USDT, BTC_USDT]
+# Array de moedas negociadas
+stocks_traded_list = [XRP_USDT, SOL_USDT, ADA_USDT, BTC_USDT]
 
 THREAD_LOCK = True  # True = execução sequencial; False = execução simultânea
 
 # 🔴🔴🔴 CONFIGURAÇÕES - FIM 🔴🔴🔴
 # -------------------------------------------------------------------------------------------------
-
-# Inicia uma thread para monitorar o saldo de BNB
-bnb_thread = threading.Thread(target=maintain_bnb_balance, args=(0.01, 300))
-bnb_thread.daemon = True
-bnb_thread.start()
-
-# 🔁 LOOP PRINCIPAL
 
 thread_lock = threading.Lock()
 
@@ -199,33 +239,36 @@ def trader_loop(stockStart: StockStartModel):
     total_executed: int = 1
 
     while True:
-        if THREAD_LOCK:
-            with thread_lock:
-                print(f"[{MaTrader.operation_code}][{total_executed}] '{MaTrader.operation_code}'")
-                MaTrader.execute()
-                print(f"^ [{MaTrader.operation_code}][{total_executed}] time_to_sleep = '{MaTrader.time_to_sleep/60:.2f} min'")
-                print("------------------------------------------------")
-                total_executed += 1
-        else:
+        try:
+            # Exibe mensagem no console (opcional)
             print(f"[{MaTrader.operation_code}][{total_executed}] '{MaTrader.operation_code}'")
             MaTrader.execute()
             print(f"^ [{MaTrader.operation_code}][{total_executed}] time_to_sleep = '{MaTrader.time_to_sleep/60:.2f} min'")
             print("------------------------------------------------")
+            
+            # Formata e envia a mensagem para o Telegram
+            message = format_telegram_message(MaTrader, total_executed)
+            send_telegram_alert(message)
+            
             total_executed += 1
+        except Exception as e:
+            error_message = f"<b>Erro no trader {MaTrader.operation_code} na execução {total_executed}:</b> {e}"
+            send_telegram_alert(error_message)
+            print(error_message)
         time.sleep(MaTrader.time_to_sleep)
 
-# Criando e iniciando uma thread para cada ativo
+# Inicia uma thread para cada ativo
 threads = []
 
 for asset in stocks_traded_list:
     thread = threading.Thread(target=trader_loop, args=(asset,))
-    thread.daemon = True  # Permite finalizar as threads ao encerrar o programa
+    thread.daemon = True  # Permite encerrar as threads junto com o programa
     thread.start()
     threads.append(thread)
 
 print("Threads iniciadas para todos os ativos.")
 
-# O programa principal continua executando sem bloquear
+# Mantém o programa em execução
 try:
     while True:
         time.sleep(1)
