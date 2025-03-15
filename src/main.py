@@ -2,19 +2,11 @@ import threading
 import time
 import requests
 import datetime
-import os
-from dotenv import load_dotenv
 from modules.BinanceTraderBot import BinanceTraderBot
 from binance.client import Client
 from Models.StockStartModel import StockStartModel
 import logging
 
-
-
-# Carrega variáveis do .env
-load_dotenv()
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 # Define o logger
 logging.basicConfig(
@@ -25,9 +17,11 @@ logging.basicConfig(
 
 # Função para enviar alertas via Telegram
 def send_telegram_alert(message: str):
-    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    bot_token = "7943661630:AAEbuCtzRuGMXebj2oZZFCPpzhEfbZB-Dmg"  # Seu token
+    chat_id = "1139475165"  # Seu chat ID
+    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
     payload = {
-        "chat_id": TELEGRAM_CHAT_ID,
+        "chat_id": chat_id,
         "text": message,
         "parse_mode": "HTML"  # Permite formatação em HTML
     }
