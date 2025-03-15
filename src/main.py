@@ -98,9 +98,9 @@ TP_AT_PERCENTAGE =      [2, 4, 8]
 TP_AMOUNT_PERCENTAGE =  [50, 50, 100]
 
 # Ajustes de tempo
-CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
-TEMPO_ENTRE_TRADES          = 30 * 60
-DELAY_ENTRE_ORDENS          = 60 * 60
+CANDLE_PERIOD = Client.KLINE_INTERVAL_5MINUTE
+TEMPO_ENTRE_TRADES          =  60
+DELAY_ENTRE_ORDENS          = 5 * 60
 
 # Moedas negociadas
 XRP_USDT = StockStartModel(
