@@ -88,7 +88,7 @@ def format_telegram_message(MaTrader: BinanceTraderBot, total_executed: int) -> 
 
 from strategies.moving_average_antecipation import getMovingAverageAntecipationTradeStrategy
 from strategies.moving_average import getMovingAverageTradeStrategy
-#from strategies.vortex_strategy import getVortexTradeStrategy
+# from strategies.vortex_strategy import getVortexTradeStrategy
 from strategies.rsi_strategy import getRsiTradeStrategy
 from strategies.vortex_strategy import getVortexTradeStrategy
 from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
@@ -102,11 +102,11 @@ from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
 
 # 🏆 ESTRATÉGIA PRINCIPAL 🏆
 
- MAIN_STRATEGY = getMovingAverageAntecipationTradeStrategy
- MAIN_STRATEGY_ARGS = {"volatility_factor": 0.5, "fast_window": 9, "slow_window": 21}
+# MAIN_STRATEGY = getMovingAverageAntecipationTradeStrategy
+# MAIN_STRATEGY_ARGS = {"volatility_factor": 0.5, "fast_window": 9, "slow_window": 21}
 
- #MAIN_STRATEGY = getVortexTradeStrategy
- #MAIN_STRATEGY_ARGS = {}
+MAIN_STRATEGY = getVortexTradeStrategy
+MAIN_STRATEGY_ARGS = {}
 
 # MAIN_STRATEGY = getMovingAverageRSIVolumeStrategy
 # MAIN_STRATEGY_ARGS = {"fast_window": 9, "slow_window": 21, "rsi_window": 14, "rsi_overbought": 70, "rsi_oversold": 30, "volume_multiplier": 1.5}
@@ -119,26 +119,26 @@ from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
 # 🥈 ESTRATÉGIA DE FALLBACK (reserva) 🥈
 
 FALLBACK_ACTIVATED = True      
-FALLBACK_STRATEGY = getVortexTradeStrategy
+FALLBACK_STRATEGY = getMovingAverageTradeStrategy
 FALLBACK_STRATEGY_ARGS = {}
 
 # ------------------------------------------------------------------
 # 🛠️ AJUSTES TÉCNICOS 🛠️
 
 ACCEPTABLE_LOSS_PERCENTAGE = 0         # (% máximo de perda aceitável)
-STOP_LOSS_PERCENTAGE = 3.5             # (% de perda para acionar venda a mercado)
+STOP_LOSS_PERCENTAGE = 2.0             # (% de perda para acionar venda a mercado)
 
-TP_AT_PERCENTAGE = [2, 4, 8]           # Meta de Take Profit (%)
+TP_AT_PERCENTAGE = [1, 2, 4]           # Meta de Take Profit (%)
 TP_AMOUNT_PERCENTAGE = [50, 50, 100]   # Percentual da posição a vender
 
 # ------------------------------------------------------------------
 # ⌛ AJUSTES DE TEMPO
 
 # CANDLE_PERIOD = Client.KLINE_INTERVAL_1HOUR
-CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
+CANDLE_PERIOD = Client.KLINE_INTERVAL_5MINUTE
 
 TEMPO_ENTRE_TRADES = 3 * 60      # em segundos
-DELAY_ENTRE_ORDENS = 15 * 60     # em segundos
+DELAY_ENTRE_ORDENS = 5 * 60     # em segundos
 
 # ------------------------------------------------------------------
 # 🪙 MOEDAS NEGOCIADAS
