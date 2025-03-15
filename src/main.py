@@ -88,7 +88,7 @@ def format_telegram_message(MaTrader: BinanceTraderBot, total_executed: int) -> 
 
 from strategies.moving_average_antecipation import getMovingAverageAntecipationTradeStrategy
 from strategies.moving_average import getMovingAverageTradeStrategy
-# from strategies.vortex_strategy import getVortexTradeStrategy
+from strategies.vortex_strategy import getVortexTradeStrategy
 from strategies.rsi_strategy import getRsiTradeStrategy
 from strategies.vortex_strategy import getVortexTradeStrategy
 from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
@@ -102,11 +102,11 @@ from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
 
 # 🏆 ESTRATÉGIA PRINCIPAL 🏆
 
-# MAIN_STRATEGY = getMovingAverageAntecipationTradeStrategy
-# MAIN_STRATEGY_ARGS = {"volatility_factor": 0.5, "fast_window": 9, "slow_window": 21}
+ MAIN_STRATEGY = getMovingAverageAntecipationTradeStrategy
+ MAIN_STRATEGY_ARGS = {"volatility_factor": 0.5, "fast_window": 9, "slow_window": 21}
 
-MAIN_STRATEGY = getVortexTradeStrategy
-MAIN_STRATEGY_ARGS = {}
+ #MAIN_STRATEGY = getVortexTradeStrategy
+ #MAIN_STRATEGY_ARGS = {}
 
 # MAIN_STRATEGY = getMovingAverageRSIVolumeStrategy
 # MAIN_STRATEGY_ARGS = {"fast_window": 9, "slow_window": 21, "rsi_window": 14, "rsi_overbought": 70, "rsi_oversold": 30, "volume_multiplier": 1.5}
@@ -119,7 +119,7 @@ MAIN_STRATEGY_ARGS = {}
 # 🥈 ESTRATÉGIA DE FALLBACK (reserva) 🥈
 
 FALLBACK_ACTIVATED = True      
-FALLBACK_STRATEGY = getMovingAverageTradeStrategy
+FALLBACK_STRATEGY = getVortexTradeStrategy
 FALLBACK_STRATEGY_ARGS = {}
 
 # ------------------------------------------------------------------
