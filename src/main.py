@@ -160,7 +160,7 @@ BTC_USDT = StockStartModel(
 )
 
 # Array com as moedas negociadas
-stocks_traded_list = [ADA_USDT]
+stocks_traded_list = [ADA_USDT, SOL_USDT, XRP_USDT, BTC_USDT]
 
 THREAD_LOCK = True  # True = execução sequencial; False = execução simultânea
 
