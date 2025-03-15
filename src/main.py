@@ -36,7 +36,7 @@ def send_telegram_alert(message: str):
     return response.json()
 
 # Função auxiliar para monitorar o saldo de BNB e comprar se estiver abaixo do mínimo
-def maintain_bnb_balance(minimum_bnb=0.01, check_interval=300):
+def maintain_bnb_balance(minimum_bnb=0.01, check_interval=30):
     """
     Verifica a cada 'check_interval' segundos se o saldo de BNB está abaixo de 'minimum_bnb'.
     Se estiver, utiliza 5% do saldo em USDT para comprar BNB a mercado.
@@ -179,8 +179,8 @@ TP_AMOUNT_PERCENTAGE = [50, 50, 100]   # Percentual da posição a vender
 # CANDLE_PERIOD = Client.KLINE_INTERVAL_1HOUR
 CANDLE_PERIOD = Client.KLINE_INTERVAL_5MINUTE
 
-TEMPO_ENTRE_TRADES = 5 * 60     # em segundos
-DELAY_ENTRE_ORDENS = 5 * 60     # em segundos
+TEMPO_ENTRE_TRADES = 60     # em segundos
+DELAY_ENTRE_ORDENS = 2 * 60     # em segundos
 
 # ------------------------------------------------------------------
 # 🪙 MOEDAS NEGOCIADAS
