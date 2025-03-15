@@ -144,11 +144,11 @@ from strategies.ma_rsi_volume_strategy import getMovingAverageRSIVolumeStrategy
 
 # 🏆 ESTRATÉGIA PRINCIPAL 🏆
 
-# MAIN_STRATEGY = getMovingAverageAntecipationTradeStrategy
-# MAIN_STRATEGY_ARGS = {"volatility_factor": 0.5, "fast_window": 9, "slow_window": 21}
+MAIN_STRATEGY = getMovingAverageAntecipationTradeStrategy
+MAIN_STRATEGY_ARGS = {"volatility_factor": 0.5, "fast_window": 9, "slow_window": 21}
 
-MAIN_STRATEGY = getVortexTradeStrategy
-MAIN_STRATEGY_ARGS = {}
+#MAIN_STRATEGY = getVortexTradeStrategy
+#MAIN_STRATEGY_ARGS = {}
 
 # MAIN_STRATEGY = getMovingAverageRSIVolumeStrategy
 # MAIN_STRATEGY_ARGS = {"fast_window": 9, "slow_window": 21, "rsi_window": 14, "rsi_overbought": 70, "rsi_oversold": 30, "volume_multiplier": 1.5}
